@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Binaries
+rbt_test
+rbt_example
+
+# scrap
+.scrap
