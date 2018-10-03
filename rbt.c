@@ -76,7 +76,7 @@ static int getPos(const int x, const int y, const int maxwidth, const int maxhei
 }
 
 /* put string at position x,y into a buffer representing a maxwidth * maxheight rectangle */
-static void putPos(char* buf, const char* src, const int x, const int y, const int maxwidth, const int maxheight) {
+static void putPos(char *buf, const char *src, const int x, const int y, const int maxwidth, const int maxheight) {
 
     int sl = strlen(src);
     int pos = getPos(x, y, maxwidth, maxheight);
@@ -96,7 +96,7 @@ static void putPos(char* buf, const char* src, const int x, const int y, const i
 }
 
 /* display node in a maxwidth * maxheight char array */
-static void rbDisplayNode(RbNode* node, char *buf, const int x, const int y, const int maxwidth, const int maxheight, const bool showNull) {
+static void rbDisplayNode(RbNode *node, char *buf, const int x, const int y, const int maxwidth, const int maxheight, const bool showNull) {
 
     char tmp[50];
 
@@ -123,7 +123,7 @@ static inline RbNode* rbCreateNode(RbNode *parent, uint32_t key) {
 
 /* replace one node with another (pointer replacement, not key/value swap) */
 #if 0 /* unused for now */
-static inline void rbReplaceNode(RbTree *tree, RbNode* a, RbNode *b) {
+static inline void rbReplaceNode(RbTree *tree, RbNode *a, RbNode *b) {
 
     memcpy(b, a, sizeof(RbNode));
 
@@ -145,7 +145,7 @@ static inline void rbReplaceNode(RbTree *tree, RbNode* a, RbNode *b) {
 #endif
 
 /* binary search tree insertion, return newly added node - or existing node if found */
-static inline RbNode* bstInsert(RbTree* tree, const uint32_t key) {
+static inline RbNode* bstInsert(RbTree *tree, const uint32_t key) {
 
     RbNode* current = tree->root;
     RbNode* parent = NULL;
@@ -179,7 +179,7 @@ static inline RbNode* bstInsert(RbTree* tree, const uint32_t key) {
 }
 
 /* perform a rotation of the given node in given direction */
-static inline void rbRotate(RbTree * tree, RbNode *root, const int dir) {
+static inline void rbRotate(RbTree *tree, RbNode *root, const int dir) {
 
     /* pivot node */
     RbNode *pivot = root->children[!dir];
@@ -280,7 +280,7 @@ RbNode* rbSearch(RbNode *root, const uint32_t key) {
 }
 
 /* insert a key into the tree, return the newly inserted node, or existing node if key exists */
-RbNode* rbInsert(RbTree * tree, const uint32_t key) {
+RbNode* rbInsert(RbTree *tree, const uint32_t key) {
 
     /* the new node is coloured red only on creation - if exists, no change of colour, so no violations */
     RbNode *ret = bstInsert(tree, key);
@@ -611,12 +611,9 @@ uint32_t rbInOrderRange(RbTree *tree, RbCallback callback, void *user, const int
 
     /* then we set up the stack for in-order traversal: only needs to contain the root and nodes where we turned in [dir] direction towards start range */
 
-    /* so that root always gets pushed */
-    int tmpdir = dir;
-
     while(current != NULL) {
 
-	tmpdir = (startrange > current->key);
+	int tmpdir = (startrange > current->key);
 
 	if(tmpdir == dir || current->key == startrange) {
 
@@ -712,12 +709,9 @@ uint32_t rbInOrderRangeTrack(RbTree *tree, RbCallback callback, void *user, cons
 
     /* then we set up the stack for in-order traversal: only needs to contain the root and nodes where we turned in [dir] direction towards start range */
 
-    /* so that root always gets pushed */
-    int tmpdir = dir;
-
     while(current != NULL) {
 
-	tmpdir = (startrange > current->key);
+	int tmpdir = (startrange > current->key);
 
 	bh += !current->red;
 	height++;
@@ -736,7 +730,7 @@ uint32_t rbInOrderRangeTrack(RbTree *tree, RbCallback callback, void *user, cons
 	current = current->children[tmpdir];
 
     }
-printf("h %d bh %d\n", height, bh);
+
     /* the rest is a regular in-order traversal, just with a break clause */
 
     if(tree->root != NULL) {

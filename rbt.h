@@ -93,7 +93,7 @@ RbTree*		rbCreate();
 RbNode*		rbSearch(RbNode *root, const uint32_t key);
 
 /* insert key into tree */
-RbNode*		rbInsert(RbTree * tree, const uint32_t key);
+RbNode*		rbInsert(RbTree *tree, const uint32_t key);
 
 /* delete node from tree (ideally one that *is* in the tree...) */
 void		rbDeleteNode(RbTree *tree, RbNode *node);

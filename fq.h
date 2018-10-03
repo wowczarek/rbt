@@ -73,16 +73,16 @@ PFQueue*	pfqCreate(const size_t capacity, const unsigned int flags);
 void		dfqFree(DFQueue *queue);
 void		pfqFree(PFQueue *queue);
 /* test callback for benchmarks and whatnot */
-bool fqDummyCallback(void* item, const bool ishead, const bool istail);
+bool fqDummyCallback(void *item, const bool ishead, const bool istail);
 /* iterate over queue contents with a callback */
-void		dfqWalk(DFQueue * queue, bool (*callback)(void*, const bool, const bool));
-void		pfqWalk(PFQueue * queue, bool (*callback)(void*, const bool, const bool));
+void		dfqWalk(DFQueue *queue, bool (*callback)(void*, const bool, const bool));
+void		pfqWalk(PFQueue *queue, bool (*callback)(void*, const bool, const bool));
 /* dump an uint32_t queue */
 void		dfqDumpU32(DFQueue *queue);
 void		pfqDumpU32(PFQueue *queue);
 /* push item onto tail of queue */
-void*		dfqPush(DFQueue* queue, void* item);
-void*		pfqPush(PFQueue* queue, void* item);
+void*		dfqPush(DFQueue *queue, void *item);
+void*		pfqPush(PFQueue *queue, void *item);
 /* pop item off the head of queue */
 void*		dfqPop(DFQueue *queue);
 void*		pfqPop(PFQueue *queue);

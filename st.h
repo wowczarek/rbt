@@ -70,16 +70,16 @@ PStack*		pstCreate(const size_t capacity, const unsigned int flags);
 void		dstFree(DStack *stack);
 void		pstFree(PStack *stack);
 /* test callback for benchmarks and whatnot */
-bool stDummyCallback(void* item);
+bool stDummyCallback(void *item);
 /* iterate over stack contents with a callback */
-void		dstWalk(DStack * stack, bool (*callback)(void*));
-void		pstWalk(PStack * stack, bool (*callback)(void*));
+void		dstWalk(DStack *stack, bool (*callback)(void*));
+void		pstWalk(PStack *stack, bool (*callback)(void*));
 /* dump an uint32_t stack */
 void		dstDumpU32(DStack *stack);
 void		pstDumpU32(PStack *stack);
 /* push item onto top of stack */
-void*		dstPush(DStack* stack, void* item);
-void*		pstPush(PStack* stack, void* item);
+void*		dstPush(DStack *stack, void *item);
+void*		pstPush(PStack *stack, void *item);
 /* pop item off top of stack */
 void*		dstPop(DStack *stack);
 void*		pstPop(PStack *stack);

@@ -47,7 +47,7 @@
 #define FQ_MIN_CAPACITY 16
 
 /* create a data queue */
-DFQueue * dfqCreate(const size_t capacity, const size_t itemsize, const unsigned int flags) {
+DFQueue* dfqCreate(const size_t capacity, const size_t itemsize, const unsigned int flags) {
 
     DFQueue *ret;
 
@@ -70,7 +70,7 @@ DFQueue * dfqCreate(const size_t capacity, const size_t itemsize, const unsigned
 }
 
 /* create a pointer queue */
-PFQueue * pfqCreate(const size_t capacity, const unsigned int flags) {
+PFQueue* pfqCreate(const size_t capacity, const unsigned int flags) {
 
     PFQueue *ret;
 
@@ -111,7 +111,7 @@ void pfqFree(PFQueue *queue) {
 
 
 /* callback to dump uint32_t, for testing */
-static bool fqU32Callback(void* item, const bool ishead, const bool istail) {
+static bool fqU32Callback(void *item, const bool ishead, const bool istail) {
 
     uint32_t n = *(uint32_t*)item;
     char *mark = (ishead && istail) ? "ht" : ishead ? "h " : istail ? "t " : "  ";
@@ -126,12 +126,12 @@ static bool fqU32Callback(void* item, const bool ishead, const bool istail) {
 }
 
 /* test callback for benchmarks and whatnot */
-bool fqDummyCallback(void* item, const bool ishead, const bool istail) {
+bool fqDummyCallback(void *item, const bool ishead, const bool istail) {
     return true;
 }
 
 /* walk the queue with a callback */
-void dfqWalk(DFQueue * queue, bool (*callback)(void* item, const bool ishead, const bool istail)) {
+void dfqWalk(DFQueue * queue, bool (*callback)(void *item, const bool ishead, const bool istail)) {
 
     if(callback == NULL) {
 	return;
@@ -156,7 +156,7 @@ void dfqWalk(DFQueue * queue, bool (*callback)(void* item, const bool ishead, co
 
 }
 
-void pfqWalk(PFQueue * queue, bool (*callback)(void* item, const bool ishead, const bool istail)) {
+void pfqWalk(PFQueue *queue, bool (*callback)(void *item, const bool ishead, const bool istail)) {
 
     if(callback == NULL) {
 	return;
@@ -196,7 +196,7 @@ void pfqDumpU32(PFQueue *queue) {
 }
 
 /* add to queue tail, return item or NULL if cannot resize */
-void* dfqPush(DFQueue* queue, void* item) {
+void* dfqPush(DFQueue *queue, void *item) {
 
     /* check if we need to grow */
     if(queue->fill == queue->capacity) {
@@ -239,7 +239,7 @@ void* dfqPush(DFQueue* queue, void* item) {
 
 }
 
-void* pfqPush(PFQueue* queue, void* item) {
+void* pfqPush(PFQueue *queue, void *item) {
 
     /* check if we need to grow */
     if(queue->fill == queue->capacity) {

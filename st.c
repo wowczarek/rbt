@@ -45,7 +45,7 @@
 #define ST_MIN_CAPACITY 16
 
 /* create a data stack */
-DStack * dstCreate(const size_t capacity, const size_t itemsize, const unsigned int flags) {
+DStack* dstCreate(const size_t capacity, const size_t itemsize, const unsigned int flags) {
 
     DStack *ret;
 
@@ -68,7 +68,7 @@ DStack * dstCreate(const size_t capacity, const size_t itemsize, const unsigned 
 }
 
 /* create a pointer stack */
-PStack * pstCreate(const size_t capacity, const unsigned int flags) {
+PStack *pstCreate(const size_t capacity, const unsigned int flags) {
 
     PStack *ret;
 
@@ -109,7 +109,7 @@ void pstFree(PStack *stack) {
 
 
 /* callback to dump uint32_t, for testing */
-static bool stU32Callback(void* item) {
+static bool stU32Callback(void *item) {
 
     uint32_t n = *(uint32_t*)item;
 
@@ -123,12 +123,12 @@ static bool stU32Callback(void* item) {
 }
 
 /* test callback for benchmarks and whatnot */
-bool stDummyCallback(void* item) {
+bool stDummyCallback(void *item) {
     return true;
 }
 
 /* walk the stack with a callback */
-void dstWalk(DStack * stack, bool (*callback)(void* item)) {
+void dstWalk(DStack *stack, bool (*callback)(void *item)) {
 
     if(callback == NULL) {
 	return;
@@ -149,7 +149,7 @@ void dstWalk(DStack * stack, bool (*callback)(void* item)) {
 
 }
 
-void pstWalk(PStack * stack, bool (*callback)(void* item)) {
+void pstWalk(PStack *stack, bool (*callback)(void *item)) {
 
     if(callback == NULL) {
 	return;
@@ -185,7 +185,7 @@ void pstDumpU32(PStack *stack) {
 }
 
 /* add to stack tail, return item or NULL if cannot resize */
-void* dstPush(DStack* stack, void* item) {
+void* dstPush(DStack *stack, void *item) {
 
     /* check if we need to grow */
     if(stack->fill == stack->capacity) {
@@ -205,7 +205,7 @@ void* dstPush(DStack* stack, void* item) {
 
 }
 
-void* pstPush(PStack* stack, void* item) {
+void* pstPush(PStack *stack, void *item) {
 
     /* check if we need to grow */
     if(stack->fill == stack->capacity) {
