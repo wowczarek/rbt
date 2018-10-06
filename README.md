@@ -220,7 +220,7 @@ Red-red violation: key 16 red -> parent key 15 red
 Red-red violation: key 18 red -> parent key 19 red
 ```
 
-## Some benchmarks
+## Some benchmarks (worst-case / random performance)
 
 Below are some plots taken from the CSV output for tests at different key insertion counts. This was done on a fairly decent Xeon box with 64G RAM. Duration measurement is done with a simple before/after `clock_gettime()`, which itself is non-instant (usually some 20 ns for a start/stop call pair with VDSO), so the more iterations per measurement, the closer the number is to "reality". There are some spikes which could be the CPU doing something else; I have not really investigated these. I could have passed these plots through a low-pass filter to produce nice, smooth log curves, but this shows the real performance (well, mostly - `clock_gettime()` can also produce spikes).  Performance is clearly dominated by cache misses (and L2 / L3 cache size is also the source of the sawtooth-like patterns); that is not the point. What is important is that it is pretty clearly shown that the total time per insertion / deletion / search is a function of *log<sub>2</sub>(n)*, and that search time is a significant contributor to both insertion and deletion. If the implementation was to be rewritten for top-down, the search and rebalance parts would have been combined, likely resulting in shaving off some / many cycles (TODO).
 
@@ -228,23 +228,25 @@ Below are some plots taken from the CSV output for tests at different key insert
 
 Before a test runs, *n*-sized randomised insertion, search and deletion arrays of keys ranging from 0 to *n*-1 are generated using [Fisher-Yates shuffle](https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle). Using premade shuffled sequences guarantees that an operation is successful every time, with no repetitions. Keys are inserted, searched and deleted by iterating over these arrays and duration of every *k* operations is measured and then divided by *k*. The incremental search during deletion (or decremental search) first finds *k* nodes from the randomised deletion array, then deletes them, and so on, in batches of *k*. The incremental search during insertion is non-optimal, because it generates a *k*-sized random sample of previously inserted keys every *k*, but it does so by fetching insert array indices from the search array, modulo dividing them by the current node count. There are definitely duplicates happening, but overall the behaviour is random enough - the lower-right corner plots are *almost* symmetrical. These incremental / decremental search times are subtracted from insertion and deletion times, and that is what constitutes the approximate rebalancing overhead - obviously any spikes are superimposed. Rebalance overhead function plots are pretty much flat (at higher node counts at least), which again is a known property of red-black trees.
 
-### 100k nodes:
+### Results
+
+#### 100k nodes:
 
 ![rbt benchmark with 100k nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_100k.png "rbt benchmark with 100k nodes")
 
-### 1M nodes:
+#### 1M nodes:
 
 ![rbt benchmark with 1M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_1m.png "rbt benchmark with 1M nodes")
 
-### 10M nodes:
+#### 10M nodes:
 
 ![rbt benchmark with 10M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_10m.png "rbt benchmark with 10M nodes")
 
-### 500M nodes<sup>*</sup>:
+#### 500M nodes<sup>*</sup>:
 
 ![rbt benchmark with 500M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_500m.png "rbt benchmark with 500M nodes")
 
-### 1000M nodes (a billion):
+#### 1000M nodes (a billion):
 
 ![rbt benchmark with 1000M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_1000m.png "rbt benchmark with 1000M nodes")
 
