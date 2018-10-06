@@ -236,7 +236,7 @@ static void runBench(RbTree *tree, const int benchtype, const int testsize, int 
 
 		uint32_t larr[testinterval];
 
-		/* __almost__ a random n-sample from all of current iarr */
+		/* __almost__ a n ideal random n-sample from all of current iarr */
 		for(int k = 0; k < testinterval; k++) {
 		    larr[k] = iarr[sarr[ j + k ] % i];
 		}
