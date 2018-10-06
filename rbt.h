@@ -45,6 +45,10 @@
 #define RB_CHATTY true
 #define RB_QUIET false
 
+/* full verification or stop on first violation */
+#define RB_STOP true
+#define RB_FULL false
+
 /* ascending / descending (ltr / rtl) traversal order */
 #define RB_ASC 0
 #define RB_DESC 1
@@ -127,8 +131,8 @@ RbNode*		rbDumpCallback(RbTree *tree, RbNode *node, void *user, const int bh, co
 /* empty callback for traversal tests */
 RbNode*		rbDummyCallback(RbTree *tree, RbNode *node, void *user, const int bh, const int height, bool *cont, const uint32_t nodenumber);
 
-/* verify red-black tree invariants, optionally displaying status on stderr (internally this is an in-order traversal with a verify callback) */
-bool		rbVerify(RbTree *tree, bool chatty);
+/* verify red-black tree invariants, optionally displaying status on stderr and verifying every node (internally this is an in-order traversal with a verify callback) */
+bool		rbVerify(RbTree *tree, bool chatty, bool stop);
 
 /* free tree nodes and tree */
 void		rbFree(RbTree *tree);

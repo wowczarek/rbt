@@ -54,6 +54,7 @@ typedef struct {
     int maxheight;
     bool valid;
     bool chatty;
+    bool stop;
 } RbVerifyState;
 
 /* helper structure to assist with height / black height tracking during traversal */
@@ -190,6 +191,10 @@ static RbNode* rbVerifyCallback(RbTree *tree, RbNode *node, void *user, const in
 		if(state->chatty) {
 		    fprintf(stderr, "Black height violation: key %d black height %d != previous black height seen %d\n", node->key, bh, state->maxbh);
 		}
+		if(state->stop) {
+		    *cont = false;
+		    return node;
+		}
 		state->maxbh = bh;
 	    }
 
@@ -199,6 +204,9 @@ static RbNode* rbVerifyCallback(RbTree *tree, RbNode *node, void *user, const in
 	    state->valid = false;
 	    if(state->chatty) {
 		fprintf(stderr, "Red-red violation: key %d red -> parent key %d red\n", node->key, node->parent->key);
+	    }
+	    if(state->stop) {
+		    *cont = false;
 	    }
 	}
 
@@ -869,9 +877,9 @@ RbNode* rbDummyCallback(RbTree *tree, RbNode *node, void *user, const int bh, co
 
 }
 
-bool rbVerify(RbTree *tree, bool chatty) {
+bool rbVerify(RbTree *tree, bool chatty, bool stop) {
 
-    RbVerifyState state = { 0, 0, true, chatty };
+    RbVerifyState state = { 0, 0, true, chatty, stop };
 
     if(tree == NULL) {
 	return true;
@@ -882,19 +890,20 @@ bool rbVerify(RbTree *tree, bool chatty) {
 	if(chatty) {
 	    fprintf(stderr, "Red root violation\n");
 	}
+	if(stop) {
+	    return false;
+	}
     }
 
     rbInOrderTrack(tree, rbVerifyCallback, &state, RB_ASC);
 
-    if(state.valid) {
+    if(chatty) {
 
-	if(chatty) {
+	if(state.valid) {
 	    fprintf(stderr, "Valid red-black tree, node count %d, max height %d, black height %d\n", tree->count, state.maxheight, state.maxbh);
+	} else {
+	    fprintf(stderr, "Invalid red-black tree.\n");
 	}
-
-    } else if (chatty) {
-
-	fprintf(stderr, "Invalid red-black tree.\n");
 
     }
 

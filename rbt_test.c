@@ -429,7 +429,7 @@ int main(int argc, char **argv) {
     fflush(stderr);
 
     DUR_START(test);
-    if(!rbVerify(tree, RB_CHATTY)) {
+    if(!rbVerify(tree, RB_CHATTY, RB_FULL)) {
 	dump = rbDisplay(tree, hsize, vsize, RB_NO_NULL);
 	printf("%s\n\n", dump);
 	free(dump);
@@ -597,7 +597,7 @@ int main(int argc, char **argv) {
     fprintf(stderr, "Verifying red-black tree... ");
     fflush(stderr);
 
-    if(!rbVerify(tree, RB_CHATTY)) {
+    if(!rbVerify(tree, RB_CHATTY, RB_FULL)) {
 	dump = rbDisplay(tree, hsize, vsize, RB_NO_NULL);
 	printf("%s\n\n", dump);
 	free(dump);
@@ -622,7 +622,7 @@ int main(int argc, char **argv) {
 	dump = rbDisplay(tree, hsize, vsize, RB_NO_NULL);
 	printf("%s\n\n", dump);
 	free(dump);
-	if(rbVerify(tree, RB_CHATTY)) {
+	if(rbVerify(tree, RB_CHATTY, RB_FULL)) {
 	    fprintf(stderr, "Tree still valid... jammy bastard.\n");
 	}
 

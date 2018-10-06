@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 		rbInsert(tree, i);
 	}
 
-	rbVerify(tree, RB_CHATTY);
+	rbVerify(tree, RB_CHATTY, RB_FULL);
 	char* d =
 	rbDisplay(tree, 80, 11, RB_NO_NULL);
 	printf("%s\n\n", d); free(d);
