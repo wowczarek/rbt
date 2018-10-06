@@ -190,7 +190,7 @@ Verifying red-black tree... Valid red-black tree, node count 20, max height 6, b
 
 Painting random 5 nodes red to invalidate tree... done
 
-Broken tree with 20 nodes:
+Most likely broken tree with 20 nodes:
 
 ................................................................................
 .......................................R12......................................
