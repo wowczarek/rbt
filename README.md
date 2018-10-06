@@ -263,3 +263,9 @@ A: Of course. Actually it is even worse, because this index will hold *hashes* o
 Q: *What is a red-black tree?*
 
 A: The "Black Diamond" variety of [crape myrtle trees](https://en.wikipedia.org/wiki/Lagerstroemia_indica) has a nice red-black appearance. Some decorative cherry trees are also good for that.
+
+Q: *No, a real red-black tree*
+
+A:
+
+![Drawing depicting a cartoon tree with red and black spots in places where limbs and branches divide, forming an n=32 red-black tree. A smiling sun is depicted above and a bird flying over the tree, defecating on it mid-flight.](https://github.com/wowczarek/rbt/raw/master/img/rbt.png "A red-black tree")
