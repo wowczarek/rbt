@@ -248,6 +248,6 @@ Before a test runs, *n*-sized randomised insertion, search and deletion arrays o
 
 I did not spend enough time analysing these plots, so for now the noise towards the end of the 1000m insertion cycle remains to be explained. Frankly I could not be arsed to wait for another 1e9 run, so as Officer Barbrady would say "IT COULD BE ANYTHING!!!".
 
-*All plots were made using [kst2 / kst-plot](https://kst-plot.kde.org/), which remains my all-time favourite graphing and data analysis package.*
+*All plots were made using [kst2 / kst-plot](https://kst-plot.kde.org/), which remains my all-time favourite graphing and data analysis package. And while I have your attention - I have trawled through many papers, plots and benchmarks in my life, and let me say this: those who fail to specify axis descriptions and units, should not bother to publish plots at all and go back to school instead.*
 
 <sup>*</sup> - the OS clock in the server was left uncorrected during the 500M run and it was drifting badly enough to affect the perceived duration of each 20000-node batch. quite badly; this is why the sustained search time is decreasing. This was corrected for the 1000M run. Why weren't you using `CLOCK_MONOTONIC` you say? I was. Duration measurement should probably be rewritten with `rdtsc` (todo).
