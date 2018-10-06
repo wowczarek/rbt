@@ -1,16 +1,21 @@
 # rbt
+
+## About
+
 Yet another red-black tree implementation, C99. Because I needed one for a dictionary / general-purpose dynamic index. Three-pointer (parent + two-child array), plus value pointer and uint32_t keys, node colour as extra bool. No pointer bit reuse, nothing too clever. No thread safety or cache awareness. As basic as it gets, no-nonsense code. Completely non-recursive, although using stacks and FIFO queues.
 
 Supports:
 
-- insertion, search, deletion,
+- search, insertion, deletion (bottom-up),
 - verification of red-black tree invariants / correctness,
 - in-order traversal with callback and optional height and black height tracking for each node inspected (which allows for fast verification),
 - in-order ranged traversal, same as above,
 - breadth-first traversal with the same (simple dynamic FIFO queue implemented for this, `fq.h`/`fq.c` - two versions, pointer queue and data queue),
 - displaying an ASCII dump of the tree.
 
-Example (`rbt_example.c`):
+## Example
+
+Example usage (`rbt_example.c`):
 
 ```c
 #include <stdio.h>
@@ -85,6 +90,8 @@ Between 4 (inclusive) and 9 (exclusive): 4 5 6 7 8, in range: 5 nodes
 Between 4 (exclusive) and 9 (inclusive): 9 8 7 6 5, in range: 5 nodes
 
 ```
+
+## Testing
 
 Provided is a test program / benchmark, `rbt_test.c`. Options:
 ```
@@ -210,3 +217,21 @@ Black height violation: key 16 black height 1 != previous black height seen 2
 Red-red violation: key 16 red -> parent key 15 red
 Red-red violation: key 18 red -> parent key 19 red
 ```
+
+## Some benchmarks
+
+Below are some plots taken from the CSV output for tests at different key insertion counts. This was done on a fairly decent Xeon box with 64G RAM. There are some spikes which could be the CPU doing something else; I have not really investigated those. The duration measurement is done with simple clock_gettime, which itself is non-instant (usually some 20 ns for a start/stop call pair), so the more iterations per measurement, the closer the number is to reality. The actual performance is clearly dominated by cache misses (and L2 / L3 cache size is also the source of the sawtooth-like patterns); that is not the point. What is important is that this pretty clearly shows that the total time per insertion / deletion / search is a function of *log<sub>2</sub>(n)*, and that search time is a significant contributor to both insertion and deletion. If the implementation was to be rewritten for top-down, the search and rebalance parts would have been combined, likely resulting in shaving off some cycles.
+
+100k nodes:
+[rbt benchmark with 100k nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_100k.png "rbt benchmark with 100k nodes")
+1M nodes:
+[rbt benchmark with 1M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_1m.png "rbt benchmark with 1M nodes")
+10M nodes:
+[rbt benchmark with 10M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_10m.png "rbt benchmark with 10M nodes")
+500M nodes:
+[rbt benchmark with 500M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_500m.png "rbt benchmark with 500M nodes")
+1000M nodes:
+[rbt benchmark with 1000M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_1000m.png "rbt benchmark with 1000M nodes")
+Again, I did not spend enough time analysing these plots, so for now the noise towards the end of the 1000m insertion cycle remains to be explained.
+
+*All plots were made using [kst2 / kst-plot](https://kst-plot.kde.org/), which remains my all-time favourite graphing and data analysis package.*
