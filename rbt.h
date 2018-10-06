@@ -41,9 +41,9 @@
 
 /* constants */
 
-/* show / hide NULL in tree display */
-#define RB_SHOW_NULL true
-#define RB_NO_NULL false
+/* silent / chatty tree verification */
+#define RB_CHATTY true
+#define RB_QUIET false
 
 /* ascending / descending (ltr / rtl) traversal order */
 #define RB_ASC 0
@@ -121,28 +121,19 @@ void		rbBreadthFirstTrack(RbTree *tree, RbCallback callback, void *user, const i
 /* breadth first without height tracking */
 void		rbBreadthFirst(RbTree *tree, RbCallback callback, void *user, const int dir);
 
- /* callback which prints node information. bh = black height, height = node height / path length */
+/* basic callback to print node information. bh = black height, height = node height / path length */
 RbNode*		rbDumpCallback(RbTree *tree, RbNode *node, void *user, const int bh, const int height, bool *cont, const uint32_t nodenumber);
 
- /* empty callback for traversal tests */
+/* empty callback for traversal tests */
 RbNode*		rbDummyCallback(RbTree *tree, RbNode *node, void *user, const int bh, const int height, bool *cont, const uint32_t nodenumber);
 
-/* display tree hierarchy in a maxwidth x maxheight text block */
-void		rbDisplay(RbTree *tree, const int maxwidth, const int maxheight, const bool showNull);
-
-/* verify red-black tree invariants (internally this is an in-order traversal with a verify callback) */
-bool		rbVerify(RbTree *tree);
+/* verify red-black tree invariants, optionally displaying status on stderr (internally this is an in-order traversal with a verify callback) */
+bool		rbVerify(RbTree *tree, bool chatty);
 
 /* free tree nodes and tree */
 void		rbFree(RbTree *tree);
 
 /* just free nodes */
 void		rbEmpty(RbTree *tree);
-
-/* dump tree contents in-order, dir RB_ASC | RB_DESC */
-void		rbDumpInOrder(RbTree *tree, const int dir);
-
-/* dump tree contents breadth-first (level by level), dir RB_ASC = left to right | RB_DESC = right to left */
-void		rbDumpBreadthFirst(RbTree *tree, const int dir);
 
 #endif /* RBT_H_ */

@@ -45,7 +45,9 @@
 #include <unistd.h>
 #include <time.h>
 #include "rbt.h"
+#include "rbt_display.h"
 
+/* constants */
 #define TESTSIZE 1000
 #define KEEPSIZE 20
 #define HSIZE 80
@@ -312,6 +314,7 @@ int main(int argc, char **argv) {
     int bench = BENCH_NONE;
     char obuf[2001];
     char *buf = obuf;
+    char *dump;
     RbTree *tree = rbCreate();
     uint32_t *iarr, *rarr, *sarr;
     DUR_INIT(test);
@@ -426,8 +429,10 @@ int main(int argc, char **argv) {
     fflush(stderr);
 
     DUR_START(test);
-    if(!rbVerify(tree)) {
-	rbDisplay(tree, hsize, vsize, RB_NO_NULL);
+    if(!rbVerify(tree, RB_CHATTY)) {
+	dump = rbDisplay(tree, hsize, vsize, RB_NO_NULL);
+	printf("%s\n\n", dump);
+	free(dump);
 	fprintf(stderr, "Call me stupid, but this tree is broken. Node insertion implementation FAIL.\n");
 	return -1;
     }
@@ -585,13 +590,17 @@ int main(int argc, char **argv) {
 
     fprintf(stderr, "Final tree with %d nodes:\n", tree->count);
 
-    rbDisplay(tree, hsize, vsize, RB_NO_NULL);
+    dump = rbDisplay(tree, hsize, vsize, RB_NO_NULL);
+    printf("%s\n\n", dump);
+    free(dump);
 
     fprintf(stderr, "Verifying red-black tree... ");
     fflush(stderr);
 
-    if(!rbVerify(tree)) {
-	rbDisplay(tree, hsize, vsize, RB_NO_NULL);
+    if(!rbVerify(tree, RB_CHATTY)) {
+	dump = rbDisplay(tree, hsize, vsize, RB_NO_NULL);
+	printf("%s\n\n", dump);
+	free(dump);
 	fprintf(stderr, "Call me stupid, but this tree is broken. Node removal implementation FAIL.\n");
 	return -1;
     }
@@ -610,8 +619,10 @@ int main(int argc, char **argv) {
 
 	fprintf(stderr, "done.\n");
 	fprintf(stderr, "\nMost likely broken tree with %d nodes:\n", keepsize);
-	rbDisplay(tree, hsize, vsize, RB_NO_NULL);
-	if(rbVerify(tree)) {
+	dump = rbDisplay(tree, hsize, vsize, RB_NO_NULL);
+	printf("%s\n\n", dump);
+	free(dump);
+	if(rbVerify(tree, RB_CHATTY)) {
 	    fprintf(stderr, "Tree still valid... jammy bastard.\n");
 	}
 

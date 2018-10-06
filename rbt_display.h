@@ -25,54 +25,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+/**
+ * @file   rbt_display.h
+ * @date   Fri Sep 14 23:27:00 2018
+ *
+ * @brief  red-black tree display function declarations
+ *
+ */
+
+#ifndef RBT_DISPLAY_H_
+#define RBT_DISPLAY_H_
+
 #include "rbt.h"
-#include "rbt_display.h"
+#include <stdbool.h>
 
-static RbNode* callback(RB_CB_ARGS) {
-	printf(" %u", node->key);
-	return node;
-}
+/* constants */
 
-int main(int argc, char **argv) {
+/* show / hide NULL in tree display */
+#define RB_SHOW_NULL true
+#define RB_NO_NULL false
 
-	uint32_t count;
-	RbTree *tree = rbCreate();
+/* return pointer to a dynamically allocated buffer containing an ASCII dump of tree hierarchy in a maxwidth x maxheight text block */
+char*		rbDisplay(RbTree *tree, const int maxwidth, const int maxheight, const bool showNull);
 
-	for(int i = 0; i < 13; i++) {
-		rbInsert(tree, i);
-	}
+/* dump tree contents in-order, dir RB_ASC | RB_DESC */
+void		rbDumpInOrder(RbTree *tree, const int dir);
 
-	rbVerify(tree, RB_CHATTY);
-	char* d =
-	rbDisplay(tree, 80, 11, RB_NO_NULL);
-	printf("%s\n\n", d); free(d);
+/* dump tree contents breadth-first (level by level), dir RB_ASC = left to right | RB_DESC = right to left */
+void		rbDumpBreadthFirst(RbTree *tree, const int dir);
 
-	printf("In order:");
-	rbInOrder(tree, callback, NULL, RB_ASC);
-	printf("\n");
-
-	printf("Breadth first:");
-	rbBreadthFirst(tree, callback, NULL, RB_ASC);
-	printf("\n");
-
-	printf("Between 4 (inclusive) and 9 (exclusive):");
-	count = rbInOrderRange(tree, callback, NULL, RB_ASC,
-		4, RB_INCL, 9, RB_EXCL);
-	printf(", in range: %u nodes\n", count);
-
-	printf("Between 4 (exclusive) and 9 (inclusive):");
-	count = rbInOrderRange(tree, callback, NULL, RB_DESC,
-		4, RB_EXCL, 9, RB_INCL);
-	printf(", in range: %u nodes\n", count);
-
-#if 0
-	printf("Couldn't stop myself from adding this because of \n"
-		"the increasing width of these lines of code here...");
-#endif
-
-	rbFree(tree);
-	return 0;
-
-}
+#endif /* RBT_DISPLAY_H_ */

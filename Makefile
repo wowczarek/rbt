@@ -1,9 +1,9 @@
 CC=gcc
 CFLAGS+=-std=c99 -Wall -I. -O3 -lrt
 
-DEPS = fq.h st.h rbt.h
-OBJ1 = fq.o st.o rbt.o rbt_test.o
-OBJ2 = fq.o rbt.o rbt_example.o
+DEPS = fq.h st.h st_inline.h rbt.h rbt_display.h
+OBJ1 = fq.o st.o rbt.o rbt_display.o rbt_test.o
+OBJ2 = fq.o rbt.o rbt_display.o rbt_example.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)

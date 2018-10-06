@@ -50,9 +50,10 @@
 
 /* red-black tree verification state container */
 typedef struct {
-    bool valid;
     int maxbh;
     int maxheight;
+    bool valid;
+    bool chatty;
 } RbVerifyState;
 
 /* helper structure to assist with height / black height tracking during traversal */
@@ -61,56 +62,6 @@ typedef struct {
     int bh;
     RbNode* node;
 } RbNodeInfo;
-
-/* get index of character at position x,y in a maxwidth * maxheight buffer with newlines every maxwidth */
-static int getPos(const int x, const int y, const int maxwidth, const int maxheight) {
-
-    int ret = y * (maxwidth + 1) + x;
-
-    if(y >= maxheight) return -1;
-    if(x >= maxwidth) return -1;
-    if (ret >= ((maxwidth + 1) * maxheight)) return -1;
-
-    return ret;
-
-}
-
-/* put string at position x,y into a buffer representing a maxwidth * maxheight rectangle */
-static void putPos(char *buf, const char *src, const int x, const int y, const int maxwidth, const int maxheight) {
-
-    int sl = strlen(src);
-    int pos = getPos(x, y, maxwidth, maxheight);
-    int maxpos = (maxwidth + 1) * maxheight;
-
-    if(pos == -1) {
-	return;
-    }
-
-    if((pos + sl) > maxpos) {
-	sl = maxpos - (pos + sl);
-    }
-
-    if(sl > 0) {
-	memcpy(buf + pos, src, ((x + sl) > maxwidth) ? maxwidth - x : sl);
-    }
-}
-
-/* display node in a maxwidth * maxheight char array */
-static void rbDisplayNode(RbNode *node, char *buf, const int x, const int y, const int maxwidth, const int maxheight, const bool showNull) {
-
-    char tmp[50];
-
-    if(node == NULL) {
-	if(showNull) {
-	    snprintf(tmp, 50, "BX");
-	    putPos(buf, tmp, x, y, maxwidth, maxheight);
-	}
-    } else {
-	snprintf(tmp, 50, "%s%u", node->red ? "R" : "B", node->key);
-	putPos(buf, tmp, x, y, maxwidth, maxheight);
-    }
-
-}
 
 /* it is what it is */
 static inline RbNode* rbCreateNode(RbNode *parent, uint32_t key) {
@@ -236,7 +187,9 @@ static RbNode* rbVerifyCallback(RbTree *tree, RbNode *node, void *user, const in
 	    /* if we see any changes in black height, tree is invalid */
 	    if(bh != state->maxbh) {
 		state->valid = false;
-		printf("Black height violation: key %d black height %d != previous black height seen %d\n", node->key, bh, state->maxbh);
+		if(state->chatty) {
+		    fprintf(stderr, "Black height violation: key %d black height %d != previous black height seen %d\n", node->key, bh, state->maxbh);
+		}
 		state->maxbh = bh;
 	    }
 
@@ -244,7 +197,9 @@ static RbNode* rbVerifyCallback(RbTree *tree, RbNode *node, void *user, const in
 
 	if(node->red && rbRed(node->parent)) {
 	    state->valid = false;
-	    printf("Red-red violation: key %d red -> parent key %d red\n", node->key, node->parent->key);
+	    if(state->chatty) {
+		fprintf(stderr, "Red-red violation: key %d red -> parent key %d red\n", node->key, node->parent->key);
+	    }
 	}
 
     }
@@ -914,64 +869,9 @@ RbNode* rbDummyCallback(RbTree *tree, RbNode *node, void *user, const int bh, co
 
 }
 
-/* print a red-black tree using a maxwidth * maxheight text block, optionally showing leafs */
-void rbDisplay(RbTree *tree, const int maxwidth, const int maxheight, const bool showNull) {
+bool rbVerify(RbTree *tree, bool chatty) {
 
-    int maxpos = (maxwidth + 1) * maxheight;
-    char obuf[maxpos + 1];
-
-    struct nodepos {
-	RbNode *node;
-	int x;
-	int y;
-	int level;
-    };
-
-    struct nodepos current = { tree->root, maxwidth / 2, 1, 2 };
-    struct nodepos tmp = current;
-    DFQueue *queue = dfqCreate(16, sizeof(struct nodepos), FQ_NONE);
-
-    memset(obuf, '.', sizeof(obuf));
-    obuf[sizeof(obuf) - 1] = '\0';
-
-    for(int i = 0; i < maxheight; i++) {
-	obuf[(maxwidth + 1) * i] = '\n';
-    }
-
-    dfqPush(queue, &current);
-
-    while(!queue->empty) {
-
-	current = *(struct nodepos*)dfqPop(queue);
-
-	if (current.node != NULL) {
-
-	    tmp.y = current.y + 2;
-	    tmp.level = current.level + 1;
-
-	    tmp.node = current.node->children[RB_LEFT];
-	    tmp.x = current.x - (maxwidth >> current.level);
-	    dfqPush(queue, &tmp);
-
-	    tmp.node = current.node->children[RB_RIGHT];
-	    tmp.x = current.x + (maxwidth >> current.level);
-	    dfqPush(queue, &tmp);
-	};
-
-	rbDisplayNode(current.node, obuf, current.x, current.y, maxwidth, maxheight, showNull);
-
-    }
-
-    dfqFree(queue);
-
-    printf("%s\n\n", obuf);
-
-}
-
-
-bool rbVerify(RbTree *tree) {
-
-    RbVerifyState state = { true, 0, 0 };
+    RbVerifyState state = { 0, 0, true, chatty };
 
     if(tree == NULL) {
 	return true;
@@ -979,18 +879,22 @@ bool rbVerify(RbTree *tree) {
 
     if(rbRed(tree->root)) {
 	state.valid = false;
-	printf("Red root violation\n");
+	if(chatty) {
+	    fprintf(stderr, "Red root violation\n");
+	}
     }
 
     rbInOrderTrack(tree, rbVerifyCallback, &state, RB_ASC);
 
     if(state.valid) {
 
-	printf("Valid red-black tree, node count %d, max height %d, black height %d\n", tree->count, state.maxheight, state.maxbh);
+	if(chatty) {
+	    fprintf(stderr, "Valid red-black tree, node count %d, max height %d, black height %d\n", tree->count, state.maxheight, state.maxbh);
+	}
 
-    } else {
+    } else if (chatty) {
 
-	printf("Invalid red-black tree.\n");
+	fprintf(stderr, "Invalid red-black tree.\n");
 
     }
 
@@ -1014,19 +918,5 @@ void rbEmpty(RbTree *tree) {
     if(tree != NULL) {
 	rbInOrder(tree, rbFreeCallback, NULL, RB_ASC);
     }
-
-}
-
-/* dump tree contents in-order */
-void rbDumpInOrder(RbTree *tree, const int dir) {
-
-    rbInOrder(tree, rbDumpCallback, NULL, dir);
-
-}
-
-/* dump tree contents breadth-first */
-void rbDumpBreadthFirst(RbTree *tree, const int dir) {
-
-    rbBreadthFirst(tree, rbDumpCallback, NULL, dir);
 
 }
