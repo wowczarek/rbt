@@ -882,6 +882,9 @@ bool rbVerify(RbTree *tree, bool chatty, bool stop) {
     RbVerifyState state = { 0, 0, true, chatty, stop };
 
     if(tree == NULL) {
+	if(chatty) {
+	    fprintf(stderr, "Empty tree, valid (NULL is black)\n");
+	}
 	return true;
     }
 
