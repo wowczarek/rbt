@@ -223,15 +223,25 @@ Red-red violation: key 18 red -> parent key 19 red
 Below are some plots taken from the CSV output for tests at different key insertion counts. This was done on a fairly decent Xeon box with 64G RAM. There are some spikes which could be the CPU doing something else; I have not really investigated those. The duration measurement is done with simple clock_gettime, which itself is non-instant (usually some 20 ns for a start/stop call pair), so the more iterations per measurement, the closer the number is to reality. The actual performance is clearly dominated by cache misses (and L2 / L3 cache size is also the source of the sawtooth-like patterns); that is not the point. What is important is that this pretty clearly shows that the total time per insertion / deletion / search is a function of *log<sub>2</sub>(n)*, and that search time is a significant contributor to both insertion and deletion. If the implementation was to be rewritten for top-down, the search and rebalance parts would have been combined, likely resulting in shaving off some cycles.
 
 100k nodes:
-[rbt benchmark with 100k nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_100k.png "rbt benchmark with 100k nodes")
+
+![rbt benchmark with 100k nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_100k.png "rbt benchmark with 100k nodes")
+
 1M nodes:
-[rbt benchmark with 1M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_1m.png "rbt benchmark with 1M nodes")
+
+![rbt benchmark with 1M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_1m.png "rbt benchmark with 1M nodes")
+
 10M nodes:
-[rbt benchmark with 10M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_10m.png "rbt benchmark with 10M nodes")
+
+![rbt benchmark with 10M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_10m.png "rbt benchmark with 10M nodes")
+
 500M nodes:
-[rbt benchmark with 500M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_500m.png "rbt benchmark with 500M nodes")
-1000M nodes:
-[rbt benchmark with 1000M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_1000m.png "rbt benchmark with 1000M nodes")
+
+![rbt benchmark with 500M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_500m.png "rbt benchmark with 500M nodes")
+
+1000M nodes (a billion):
+
+![rbt benchmark with 1000M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_1000m.png "rbt benchmark with 1000M nodes")
+
 Again, I did not spend enough time analysing these plots, so for now the noise towards the end of the 1000m insertion cycle remains to be explained.
 
 *All plots were made using [kst2 / kst-plot](https://kst-plot.kde.org/), which remains my all-time favourite graphing and data analysis package.*
