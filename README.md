@@ -250,6 +250,8 @@ Before a test runs, *n*-sized randomised insertion, search and deletion arrays o
 
 ![rbt benchmark with 1000M nodes](https://github.com/wowczarek/rbt/raw/master/img/rbt_1000m.png "rbt benchmark with 1000M nodes")
 
+#### Notes
+
 I did not spend enough time analysing these plots, so for now the noise towards the end of the 1000M insertion cycle remains to be explained. Frankly I could not be arsed to wait for another 1e9 run, so as Officer Barbrady would say "IT COULD BE ANYTHING!!!".
 
 All plots were made using [kst2 / kst-plot](https://kst-plot.kde.org/), which remains my all-time favourite graphing and data analysis package, and likely a mark of my age and unchanging habits. *While I have your attention - I have trawled through many papers, plots and benchmarks in my life, and let me say this: those who fail to specify axis descriptions and units, should not bother to publish plots at all and go back to school instead. K, thx, bye.*
