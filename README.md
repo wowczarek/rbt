@@ -256,16 +256,16 @@ All plots were made using [kst2 / kst-plot](https://kst-plot.kde.org/), which re
 
 ## FAQ
 
-Q: *If this is for a dictionary index, why are you going with red-black trees and not hash tables? Surely you do not need in-order traversal or ranged searches for a dictionary?*
+**Q:** *If this is for a dictionary index, why are you going with red-black trees and not hash tables? Surely you do not need in-order traversal or ranged searches for a dictionary?*
 
-A: Of course. Actually it is even worse, because this index will hold *hashes* of full tree node paths of a hierarchical configuration container. Implementing a non-shite *dynamically resizing* hash table however, is somewhat less trivial a task than implementing a red-black tree, and there is no amortisation with a red-black tree, there is no load factor and no emptiness either, even if temporary. I wrote this for convenience, not for ultimate performance, even though some gains could be made from top-down operations, and a *k*-ary tree could make great use of vectorisation. Plus, it this was a fun exercise. The aforementioned non-shite dynamically resizing hash table is next on my list, but let me tell you a secret: I am not a computer scientist. I am not a real programmer either!
+**A:** Of course. Actually it is even worse, because this index will hold *hashes* of full tree node paths of a hierarchical configuration container. Implementing a non-shite *dynamically resizing* hash table however, is somewhat less trivial a task than implementing a red-black tree, and there is no amortisation with a red-black tree, there is no load factor and no emptiness either, even if temporary. I wrote this for convenience, not for ultimate performance, even though some gains could be made from top-down operations, and a *k*-ary tree could make great use of vectorisation. Plus, it this was a fun exercise. The aforementioned non-shite dynamically resizing hash table is next on my list, but let me tell you a secret: I am not a computer scientist. I am not a real programmer either!
 
-Q: *What is a red-black tree?*
+**Q:** *What is a red-black tree?*
 
-A: The "Black Diamond" variety of [crape myrtle trees](https://en.wikipedia.org/wiki/Lagerstroemia_indica) has a nice red-black appearance. Some decorative cherry trees are also good for that.
+**A:** The "Black Diamond" variety of [crape myrtle trees](https://en.wikipedia.org/wiki/Lagerstroemia_indica) has a nice red-black appearance. Some decorative cherry trees are also good for that.
 
-Q: *No, a real red-black tree*
+**Q:** *No, a real red-black tree*
 
-A:
+**A:**
 
 ![Drawing depicting a cartoon tree with red and black spots in places where limbs and branches divide, forming an n=32 red-black tree. A smiling sun is depicted above and a bird flying over the tree, defecating on it mid-flight.](https://github.com/wowczarek/rbt/raw/master/img/rbt.png "A red-black tree")
