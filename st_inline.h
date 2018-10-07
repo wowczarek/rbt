@@ -41,23 +41,23 @@
 /* ======== pointer stack ======== */
 
 /* declare a stack of given name, element pointer type and minimum / initial capacity */
-#define PST_DECL(name, type, minsize) type *name##_st;\
+#define PST_DECL(name, type, minsize) type *name;\
 				size_t name##_sh = 0;\
 				size_t name##_ss = minsize;\
 				size_t name##_ms = minsize;\
 				size_t name##_es = sizeof(type);
 
 /* initialise a stack */
-#define PST_INIT(name) name##_st = malloc(name##_ms * sizeof(void*));
+#define PST_INIT(name) name = malloc(name##_ms * sizeof(void*));
 
 /* blindly push data onto top of stack - use only in a loop that checks if stack is full */
-#define PST_PUSH(name, item) name##_st[name##_sh++] = item;
+#define PST_PUSH(name, item) name[name##_sh++] = item;
 
 /* safely push data onto top of stack, grow stack if required */
 #define PST_PUSH_GROW(name, item) if(name##_sh >= name##_ss) {\
-				name##_st = realloc(name##_st, (name##_ss <<= 1) * name##_es);\
+				name = realloc(name, (name##_ss <<= 1) * name##_es);\
 			    }\
-			    name##_st[name##_sh++] = item;
+			    name[name##_sh++] = item;
 
 /* stack checks */
 #define PST_EMPTY(name) (name##_sh <= 0)
@@ -66,45 +66,45 @@
 #define PST_NONFULL(name) (name##_sh < name##_ss)
 
 /* blindly pop data off top of stack - use only in a loop that checks if stack is empty */
-#define PST_POP(name)		name##_st[--name##_sh]
+#define PST_POP(name)		name[--name##_sh]
 
 /* safely pop data off top of stack, return NULL if empty */
 #define PST_POP_SAFE(name)	PST_NONEMPTY(name) ? PST_POP(name) : NULL
 
 /* pop data off top of stack and shrink it if need be (shrink by half when 25% capacity reached) */
 #define PST_POP_SHRINK(name) (\
-		name##_st = (name##_ss > name##_ms && name##_sh < (name##_ss >> 2)) ? realloc(name##_st, (name##_ss >> 1) * name##_es) : name##_st,\
-		name##_st[--name##_sh])
+		name = (name##_ss > name##_ms && name##_sh < (name##_ss >> 2)) ? realloc(name, (name##_ss >> 1) * name##_es) : name,\
+		name[--name##_sh])
 
 /* safely pop data off top of stack, shrink if need be and return NULL if empty */
 #define PST_POP_SHRINK_SAFE(name)	PST_NONEMPTY(name) ? PST_POP_SHRINK(name) : NULL
 
 /* blindly peek at the top element of stack */
-#define PST_PEEK(name) name##_st[name##_sh - 1]
+#define PST_PEEK(name) name[name##_sh - 1]
 
 /* safely peek at the top element of stack and return NULL if empty */
 #define PST_PEEK_SAFE(name) PST_NONEMPTY(name) ? PST_PEEK(name) : NULL
 
 /* free stack data allocation */
-#define PST_FREE(name) free(name##_st);
+#define PST_FREE(name) free(name);
 
 /* free every pointer on the stack and reset the stack */
-#define PST_FREEDATA(name) for(int name##_i = 0; name##_i < name##_sh; name##_i++) { free(name##_st[name##_i]); }; name##_sh = 0;
+#define PST_FREEDATA(name) for(int name##_i = 0; name##_i < name##_sh; name##_i++) { free(name[name##_i]); }; name##_sh = 0;
 
 /* ======== data stack ======== */
 
 /* declare a stack of given name, element type and minimum / initial capacity */
-#define DST_DECL(name, type, minsize) type *name##_st;\
+#define DST_DECL(name, type, minsize) type *name;\
 				type *name##_sp;\
 				size_t name##_sh = 0;\
 				size_t name##_ss = minsize;\
 				size_t name##_ms = minsize;\
-				bool name##_stest = false;\
+				bool nameest = false;\
 				size_t name##_es = sizeof(type);
 
 /* initialise a stack */
-#define DST_INIT(name) name##_st = malloc(name##_ms * name##_es);\
-			    name##_sp = name##_st;
+#define DST_INIT(name) name = malloc(name##_ms * name##_es);\
+			    name##_sp = name;
 
 /* blindly push data onto top of stack - use only in a loop that checks if stack is full */
 #define DST_PUSH(name, item) name##_sh++;\
@@ -113,14 +113,14 @@
 /* safely push data onto top of stack, grow stack if required */
 #define DST_PUSH_GROW(name, item) name##_sh++;\
 			    if(name##_sh >= name##_ss) {\
-				name##_st = realloc(name##_st, (name##_ss <<= 1) * name##_es);\
-				name##_sp = name##_st + name##_sh - 1;\
+				name = realloc(name, (name##_ss <<= 1) * name##_es);\
+				name##_sp = name + name##_sh - 1;\
 			    }\
 			    *(name##_sp++) = item;
 
 /* stack checks */
-#define DST_EMPTY(name) (name##_sp == name##_st)
-#define DST_NONEMPTY(name) (name##_sp != name##_st)
+#define DST_EMPTY(name) (name##_sp == name)
+#define DST_NONEMPTY(name) (name##_sp != name)
 #define DST_FULL(name) (name##_sh == name##_ss)
 #define DST_NONFULL(name) (name##_sh < name##_ss)
 
@@ -132,9 +132,9 @@
 
 /* pop data off top of stack and shrink it if need be (shrink by half when 25% capacity reached) */
 #define DST_POP_SHRINK(name) (\
-		name##_stest = (name##_ss > name##_ms && name##_sh < (name##_ss >> 2)),\
-		name##_st = name##_stest ? realloc(name##_st, (name##_ss >> 1) * name##_es) : name##_st,\
-		name##_sp = name##_stest ? (name##_ss >>= 1, name##_st + name##_sh) : name##_sp,\
+		nameest = (name##_ss > name##_ms && name##_sh < (name##_ss >> 2)),\
+		name = nameest ? realloc(name, (name##_ss >> 1) * name##_es) : name,\
+		name##_sp = nameest ? (name##_ss >>= 1, name + name##_sh) : name##_sp,\
 		name##_sh--,\
 		--name##_sp)
 
@@ -148,9 +148,9 @@
 #define DST_PEEK_SAFE(name) PST_NONEMPTY(name) ? (name##_sp - 1) : NULL
 
 /* free stack data allocation */
-#define DST_FREE(name) free(name##_st);
+#define DST_FREE(name) free(name);
 
 /* reset stack */
-#define DST_FLUSH(name) name##_sp = name##_st; name##_sh = 0;
+#define DST_FLUSH(name) name##_sp = name; name##_sh = 0;
 
 #endif /* ST_INLINE_H_ */
