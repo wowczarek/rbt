@@ -148,7 +148,7 @@
 #define DST_PEEK_SAFE(name) PST_NONEMPTY(name) ? (name##_sp - 1) : NULL
 
 /* free stack data allocation */
-#define DST_FREE(name) (name##_stest, free(name));
+#define DST_FREE(name) (name##_stest ? free(name) : free(name));
 
 /* reset stack */
 #define DST_FLUSH(name) name##_sp = name; name##_sh = 0;
