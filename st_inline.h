@@ -99,7 +99,7 @@
 				size_t name##_sh = 0;\
 				size_t name##_ss = minsize;\
 				size_t name##_ms = minsize;\
-				bool nameest = false;\
+				bool name##_stest = false;\
 				size_t name##_es = sizeof(type);
 
 /* initialise a stack */
@@ -132,9 +132,9 @@
 
 /* pop data off top of stack and shrink it if need be (shrink by half when 25% capacity reached) */
 #define DST_POP_SHRINK(name) (\
-		nameest = (name##_ss > name##_ms && name##_sh < (name##_ss >> 2)),\
-		name = nameest ? realloc(name, (name##_ss >> 1) * name##_es) : name,\
-		name##_sp = nameest ? (name##_ss >>= 1, name + name##_sh) : name##_sp,\
+		name##_stest = (name##_ss > name##_ms && name##_sh < (name##_ss >> 2)),\
+		name = name##_stest ? realloc(name, (name##_ss >> 1) * name##_es) : name,\
+		name##_sp = name##_stest ? (name##_ss >>= 1, name + name##_sh) : name##_sp,\
 		name##_sh--,\
 		--name##_sp)
 
@@ -148,7 +148,7 @@
 #define DST_PEEK_SAFE(name) PST_NONEMPTY(name) ? (name##_sp - 1) : NULL
 
 /* free stack data allocation */
-#define DST_FREE(name) free(name);
+#define DST_FREE(name) (name##_stest, free(name));
 
 /* reset stack */
 #define DST_FLUSH(name) name##_sp = name; name##_sh = 0;
