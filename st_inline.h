@@ -119,7 +119,7 @@
 			    *(name##_sp++) = item;
 
 /* stack checks */
-#define DST_EMPTY(name) (name##_sp -= name##_st)
+#define DST_EMPTY(name) (name##_sp == name##_st)
 #define DST_NONEMPTY(name) (name##_sp != name##_st)
 #define DST_FULL(name) (name##_sh == name##_ss)
 #define DST_NONFULL(name) (name##_sh < name##_ss)
@@ -149,5 +149,8 @@
 
 /* free stack data allocation */
 #define DST_FREE(name) free(name##_st);
+
+/* reset stack */
+#define DST_FLUSH(name) name##_sp = name##_st; name##_sh = 0;
 
 #endif /* ST_INLINE_H_ */
