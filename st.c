@@ -107,6 +107,16 @@ void pstFree(PStack *stack) {
     }
 }
 
+/* free all pointers on the stack */
+void pstFreeData(PStack *stack) {
+
+    void *item;
+
+    while((item = pstPop(stack)) != NULL) {
+	free(item);
+    }
+
+}
 
 /* callback to dump uint32_t, for testing */
 static bool stU32Callback(void *item) {

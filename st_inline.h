@@ -88,6 +88,9 @@
 /* free stack data allocation */
 #define PST_FREE(name) free(name##_st);
 
+/* free every pointer on the stack and reset the stack */
+#define PST_FREEDATA(name) for(int name##_i = 0; name##_i < name##_sh; name##_i++) { free(name##_st[name##_i]); }; name##_sh = 0;
+
 /* ======== data stack ======== */
 
 /* declare a stack of given name, element type and minimum / initial capacity */

@@ -69,6 +69,7 @@ PStack*		pstCreate(const size_t capacity, const unsigned int flags);
 /* free FIFO stack */
 void		dstFree(DStack *stack);
 void		pstFree(PStack *stack);
+void		pstFreeData(PStack *stack);
 /* test callback for benchmarks and whatnot */
 bool stDummyCallback(void *item);
 /* iterate over stack contents with a callback */
