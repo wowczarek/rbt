@@ -63,8 +63,8 @@ typedef struct {
 } PFQueue;
 
 #define FQ_NONE		0
-#define FQ_NO_SHRINK	1<<0
-#define FQ_NO_GROW	1<<1
+#define FQ_NO_SHRINK	(1<<0)
+#define FQ_NO_GROW	(1<<1)
 
 /* allocate and initialise new FIFO queue*/
 DFQueue*	dfqCreate(const size_t capacity, const size_t itemsize, const unsigned int flags);

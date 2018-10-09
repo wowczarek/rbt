@@ -60,8 +60,8 @@ typedef struct {
 } PStack;
 
 #define ST_NONE		0
-#define ST_NO_SHRINK	1<<0
-#define ST_NO_GROW	1<<1
+#define ST_NO_SHRINK	(1<<0)
+#define ST_NO_GROW	(1<<1)
 
 /* allocate and initialise new stack */
 DStack*		dstCreate(const size_t capacity, const size_t itemsize, const unsigned int flags);
