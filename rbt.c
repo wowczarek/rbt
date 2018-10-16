@@ -72,7 +72,7 @@ static inline RbNode* rbCreateNode(RbNode *parent, uint32_t key) {
     ret->parent = parent;
     ret->value = NULL;
     ret->key = key;
-    ret->collcount = 0;
+
     return ret;
 }
 
