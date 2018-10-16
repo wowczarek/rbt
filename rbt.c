@@ -67,9 +67,12 @@ typedef struct {
 /* it is what it is */
 static inline RbNode* rbCreateNode(RbNode *parent, uint32_t key) {
 
-    RbNode *ret = calloc(1, sizeof(RbNode));
-    ret->key = key;
+    RbNode *ret = malloc(sizeof(RbNode));
+    ret->children[0] = ret->children[1] = NULL;
     ret->parent = parent;
+    ret->value = NULL;
+    ret->key = key;
+    ret->collcount = 0;
     return ret;
 }
 
