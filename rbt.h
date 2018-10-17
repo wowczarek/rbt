@@ -62,6 +62,9 @@
 #define RB_EXCL 1 /* exclude limit */
 #define RB_INF  2 /* no limit */
 
+/* tree flags */
+#define RB_PREALLOC (1 << 0) /* preallocate value for each node */
+
 typedef struct RbNode RbNode;
 
 /* the tree node */
@@ -78,7 +81,10 @@ struct RbNode {
 /* tree container; node count is maintained at minimal cost */
 typedef struct {
     RbNode *root;
+    void (*freeCallback) (void *value); /* callback to be called to free preallocated values */
+    size_t valuesize;
     uint32_t count;
+    unsigned int flags;
 } RbTree;
 
 /*
@@ -92,6 +98,8 @@ typedef RbNode* (*RbCallback) (RbTree*, RbNode*, void*, const int, const int, bo
 
 /* create an empty red-black tree */
 RbTree*		rbCreate();
+/* create an empty red-black tree, but preallocate values */
+RbTree*		rbCreatePrealloc(const size_t valuesize, void (*freeCallback) (void *value));
 
 /* search for key, return node */
 RbNode*		rbSearch(RbNode *root, const uint32_t key);

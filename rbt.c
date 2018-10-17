@@ -121,6 +121,12 @@ static inline RbNode* bstInsert(RbTree *tree, const uint32_t key) {
 
     /* create a new node, mark it red */
     current = rbCreateNode(parent, key);
+
+    /* need to pre-allocate space */
+    if(tree->flags & RB_PREALLOC) {
+	current->value = calloc(1, tree->valuesize);
+    }
+
     current->red = true;
     tree->count++;
 
@@ -163,6 +169,13 @@ static RbNode* rbFreeCallback(RbTree *tree, RbNode *node, void *user, const int 
 
     if(node == tree->root) {
 	tree->root = NULL;
+    }
+
+    if(tree->flags & RB_PREALLOC) {
+	if(tree->freeCallback != NULL) {
+	    tree->freeCallback(node->value);
+	}
+	free(node->value);
     }
 
     free(node);
@@ -222,15 +235,29 @@ static RbNode* rbVerifyCallback(RbTree *tree, RbNode *node, void *user, const in
 /* create a red-black tree */
 RbTree* rbCreate() {
 
-    RbTree* ret = calloc(1, sizeof(RbTree));
+    RbTree *ret = calloc(1, sizeof(RbTree));
     return ret;
 
+}
+
+/* create a red-black tree that will pre-allocate values of given size on insertion */
+RbTree* rbCreatePrealloc(const size_t valuesize, void (*freeCallback) (void *value)) {
+
+    RbTree *ret = rbCreate();
+
+    if(ret != NULL) {
+	ret->freeCallback = freeCallback;
+	ret->valuesize = valuesize;
+	ret->flags |= RB_PREALLOC;
+    }
+
+    return ret;
 }
 
 /* binary search tree search (in a red-black tree) */
 RbNode* rbSearch(RbNode *root, const uint32_t key) {
 
-    RbNode* current = root;
+    RbNode *current = root;
 
     while(current != NULL) {
 
