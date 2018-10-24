@@ -2,16 +2,18 @@
 
 ## About
 
-Yet another [red-black tree](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree) implementation, written in C99. Because I needed one for a dictionary / general-purpose dynamic index. Three-pointer (parent + two-child array), plus value pointer and uint32_t keys, node colour as extra bool. No pointer bit reuse, nothing too clever. No thread safety or cache awareness. As basic as it gets, no-nonsense code. Completely non-recursive, although using stacks and FIFO queues. This implementation can alternatively be referred to as Random Bastard Tree. The code is BSD 2-clause licenced. Why not GPL? For because no, forced freedom is not freedom in my book.
+Yet another [red-black tree](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree) implementation, written in C99. Because I needed one for a dictionary / general-purpose dynamic index (to be used for [Barser](https://github.com/wowczarek/barser)). Three-pointer (parent + two-child array), plus value pointer and uint32_t keys, node colour as extra bool. No pointer bit reuse, nothing too clever. No thread safety or cache awareness. As basic as it gets, no-nonsense code. Completely non-recursive, although using stacks and FIFO queues. This implementation can alternatively be referred to as Random Bastard Tree. The code is BSD 2-clause licenced. Why not GPL? For because no, forced freedom is not freedom in my book.
 
 Supports:
 
-- search, insertion, deletion (bottom-up),
+- retrieval, insertion, deletion (bottom-up),
 - verification of red-black tree invariants / correctness,
 - in-order traversal with callback and optional height and black height tracking for each node inspected (which allows for fast verification),
 - in-order ranged traversal, same as above,
 - breadth-first traversal with the same (simple dynamic FIFO queue implemented for this, `fq.h`/`fq.c` - two versions, pointer queue and data queue),
+- traversal callbacks
 - producing an ASCII dump of the tree (separate object to core rbt code)
+- optional pre-allocation of data of specified size (`rbCreatePrealloc()`)
 
 ## Example
 
