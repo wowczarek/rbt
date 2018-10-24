@@ -42,6 +42,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
+#include "xalloc.h"
 #include "fq.h"
 
 #define FQ_MIN_CAPACITY 16
@@ -55,15 +56,17 @@ DFQueue* dfqCreate(const size_t capacity, const size_t itemsize, const unsigned 
 	return NULL;
     }
 
-    ret = calloc(1, sizeof(DFQueue));
+    xmalloc(ret, sizeof(DFQueue));
 
-    if(ret != NULL) {
-	ret->itemsize = itemsize;
-	ret->capacity = (capacity < FQ_MIN_CAPACITY) ? FQ_MIN_CAPACITY : capacity;
-	ret->data = malloc(ret->capacity * itemsize);
-	ret->flags = flags;
-	ret->empty = true;
-    }
+    ret->capacity = (capacity < FQ_MIN_CAPACITY) ? FQ_MIN_CAPACITY : capacity;
+    xmalloc(ret->data, ret->capacity * itemsize);
+
+    ret->head = 0;
+    ret->tail = 0;
+    ret->itemsize = itemsize;
+    ret->fill = 0;
+    ret->flags = flags;
+    ret->empty = true;
 
     return ret;
 
@@ -74,14 +77,15 @@ PFQueue* pfqCreate(const size_t capacity, const unsigned int flags) {
 
     PFQueue *ret;
 
-    ret = calloc(1, sizeof(PFQueue));
+    xmalloc(ret, sizeof(PFQueue));
+    ret->capacity = (capacity < FQ_MIN_CAPACITY) ? FQ_MIN_CAPACITY : capacity;
+    xmalloc(ret->data, ret->capacity * sizeof(void*));
 
-    if(ret != NULL) {
-	ret->capacity = (capacity < FQ_MIN_CAPACITY) ? FQ_MIN_CAPACITY : capacity;
-	ret->data = malloc(ret->capacity * sizeof(void*));
-	ret->flags = flags;
-	ret->empty = true;
-    }
+    ret->head = 0;
+    ret->tail = 0;
+    ret->fill = 0;
+    ret->flags = flags;
+    ret->empty = true;
 
     return ret;
 
@@ -207,7 +211,7 @@ void* dfqPush(DFQueue *queue, void *item) {
 
 	/* grow */
 	queue->capacity <<= 1;
-	queue->data = realloc(queue->data, queue->capacity  * queue->itemsize);
+	xrealloc(queue->data, queue->data, queue->capacity * queue->itemsize);
 
 	/* wrapped queue: move head-end towards the end */
 	if(queue->tail < queue->head) {
@@ -250,7 +254,7 @@ void* pfqPush(PFQueue *queue, void *item) {
 
 	/* grow */
 	queue->capacity <<= 1;
-	queue->data = realloc(queue->data, queue->capacity * sizeof(void*));
+	xrealloc(queue->data, queue->data, queue->capacity * sizeof(void*));
 
 	/* wrapped queue: move head-end towards the end */
 	if(queue->tail < queue->head) {
@@ -309,7 +313,7 @@ void* dfqPop(DFQueue *queue) {
 	    }
 	    /* slurp */
 	    queue->capacity >>= 1;
-	    queue->data = realloc(queue->data, queue->capacity * queue->itemsize);
+	    xrealloc(queue->data, queue->data, queue->capacity * queue->itemsize);
 	}
 
 	queue->fill--;
@@ -361,7 +365,7 @@ void* pfqPop(PFQueue *queue) {
 	    }
 	    /* slurp */
 	    queue->capacity >>= 1;
-	    queue->data = realloc(queue->data, queue->capacity * sizeof(void*));
+	    xrealloc(queue->data, queue->data, queue->capacity * sizeof(void*));
 	}
 
 	queue->fill--;

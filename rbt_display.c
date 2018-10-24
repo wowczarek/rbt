@@ -37,6 +37,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "xalloc.h"
 #include "rbt_display.h"
 #include "fq.h"
 #include "rbt.h"
@@ -95,7 +96,7 @@ static void rbDisplayNode(RbNode *node, char *buf, const int x, const int y, con
 char* rbDisplay(RbTree *tree, const int maxwidth, const int maxheight, const bool showNull) {
 
     int maxpos = (maxwidth + 1) * maxheight;
-    char* obuf = malloc(maxpos + 1);
+    char* obuf;
 
     struct nodepos {
 	RbNode *node;
@@ -104,13 +105,11 @@ char* rbDisplay(RbTree *tree, const int maxwidth, const int maxheight, const boo
 	int level;
     };
 
-    if(obuf == NULL) {
-	return NULL;
-    }
-
     struct nodepos current = { tree->root, maxwidth / 2, 1, 2 };
     struct nodepos tmp = current;
     DFQueue *queue = dfqCreate(16, sizeof(struct nodepos), FQ_NONE);
+
+    xmalloc(obuf, maxpos + 1);
 
     memset(obuf, '.', maxpos);
     obuf[maxpos] = '\0';

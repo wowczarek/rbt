@@ -38,9 +38,13 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
-#include "rbt.h"
+
+
 #include "fq.h"
 #include "st_inline.h"
+#include "xalloc.h"
+
+#include "rbt.h"
 
 /* helper macros */
 #define rbRed(var) (var != NULL && var->red)
@@ -67,7 +71,9 @@ typedef struct {
 /* it is what it is */
 static inline RbNode* rbCreateNode(RbNode *parent, uint32_t key) {
 
-    RbNode *ret = malloc(sizeof(RbNode));
+    RbNode *ret;
+
+    xmalloc(ret, sizeof(RbNode));
     ret->children[0] = ret->children[1] = NULL;
     ret->parent = parent;
     ret->value = NULL;
@@ -124,7 +130,7 @@ static inline RbNode* bstInsert(RbTree *tree, const uint32_t key) {
 
     /* need to pre-allocate space */
     if(tree->flags & RB_PREALLOC) {
-	current->value = calloc(1, tree->valuesize);
+	xcalloc(current->value, 1, tree->valuesize);
     }
 
     current->red = true;
@@ -236,7 +242,10 @@ static RbNode* rbVerifyCallback(RbTree *tree, RbNode *node, void *user, const in
 /* create a red-black tree */
 RbTree* rbCreate() {
 
-    RbTree *ret = calloc(1, sizeof(RbTree));
+    RbTree *ret;
+
+    xcalloc(ret, 1, sizeof(RbTree));
+
     return ret;
 
 }

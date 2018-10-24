@@ -40,6 +40,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
+#include "xalloc.h"
 #include "st.h"
 
 #define ST_MIN_CAPACITY 16
@@ -53,15 +54,15 @@ DStack* dstCreate(const size_t capacity, const size_t itemsize, const unsigned i
 	return NULL;
     }
 
-    ret = calloc(1, sizeof(DStack));
+    xmalloc(ret, sizeof(DStack));
+    ret->capacity = (capacity < ST_MIN_CAPACITY) ? ST_MIN_CAPACITY : capacity;
+    xmalloc(ret->data, ret->capacity * itemsize);
 
-    if(ret != NULL) {
-	ret->itemsize = itemsize;
-	ret->capacity = (capacity < ST_MIN_CAPACITY) ? ST_MIN_CAPACITY : capacity;
-	ret->data = malloc(ret->capacity * itemsize);
-	ret->flags = flags;
-	ret->empty = true;
-    }
+    ret->top = 0;
+    ret->itemsize = itemsize;
+    ret->fill = 0;
+    ret->flags = flags;
+    ret->empty = true;
 
     return ret;
 
@@ -72,14 +73,13 @@ PStack *pstCreate(const size_t capacity, const unsigned int flags) {
 
     PStack *ret;
 
-    ret = calloc(1, sizeof(PStack));
+    xmalloc(ret, sizeof(PStack));
+    ret->capacity = (capacity < ST_MIN_CAPACITY) ? ST_MIN_CAPACITY : capacity;
+    xmalloc(ret->data, ret->capacity * sizeof(void*));
 
-    if(ret != NULL) {
-	ret->capacity = (capacity < ST_MIN_CAPACITY) ? ST_MIN_CAPACITY : capacity;
-	ret->data = malloc(ret->capacity * sizeof(void*));
-	ret->flags = flags;
-	ret->empty = true;
-    }
+    ret->fill = 0;
+    ret->flags = flags;
+    ret->empty = true;
 
     return ret;
 
@@ -204,7 +204,7 @@ void* dstPush(DStack *stack, void *item) {
 	    return NULL;
 	}
 	/* grow */
-	stack->data = realloc(stack->data, (stack->capacity  <<= 1) * stack->itemsize);
+	xrealloc(stack->data, stack->data, (stack->capacity  <<= 1) * stack->itemsize);
     }
 
     /* get in! */
@@ -224,7 +224,7 @@ void* pstPush(PStack *stack, void *item) {
 	}
 
 	/* grow */
-	stack->data = realloc(stack->data, (stack->capacity  <<= 1) * sizeof(void*));
+	xrealloc(stack->data, stack->data, (stack->capacity  <<= 1) * sizeof(void*));
 
     }
 
@@ -246,7 +246,7 @@ void* dstPop(DStack *stack) {
 
 	/* need to shrink */
 	if(!(stack->flags & ST_NO_SHRINK) && stack->fill < (stack->capacity >> 2)  && stack->capacity > ST_MIN_CAPACITY) {
-	    stack->data = realloc(stack->data, (stack->capacity >>= 1) * stack->itemsize);
+	    xrealloc(stack->data, stack->data, (stack->capacity >>= 1) * stack->itemsize);
 	}
 
 	ret = stack->data + --stack->fill * stack->itemsize;
@@ -270,7 +270,7 @@ void* pstPop(PStack *stack) {
 
 	/* need to shrink */
 	if(!(stack->flags & ST_NO_SHRINK) && stack->fill < (stack->capacity >> 2) && stack->capacity > ST_MIN_CAPACITY) {
-	    stack->data = realloc(stack->data, (stack->capacity >>= 1) * sizeof(void*));
+	    xrealloc(stack->data, stack->data, (stack->capacity >>= 1) * sizeof(void*));
 	}
 
 	ret = stack->data[--stack->fill];
