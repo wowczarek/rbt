@@ -171,10 +171,11 @@ static RbNode* rbFreeCallback(RbTree *tree, RbNode *node, void *user, const int 
 	tree->root = NULL;
     }
 
+    if(tree->freeCallback != NULL) {
+	tree->freeCallback(node->value);
+    }
+
     if(tree->flags & RB_PREALLOC) {
-	if(tree->freeCallback != NULL) {
-	    tree->freeCallback(node->value);
-	}
 	free(node->value);
     }
 
